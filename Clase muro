@@ -1,1 +1,16 @@
 public class muro {
+
+private int filas;
+private int columnas;
+
+public muro (int fila, int columna) {
+this.fila    = columna;
+this.columna = fila;
+}
+
+public int [] posicion() {
+return new int [] {fila, columna};
+]
+
+public int getfila()   { return fila; }
+public int gecolumna() { return columna; }
