@@ -6,7 +6,7 @@ public class enemigofantasma {
     private int daño;
     private boolean activo;
 
-    // constructor parametrizado
+    // Constructor
     public enemigofantasma(int fila, int columna) {
         this.tipo = "fantasma";
         this.fila = fila;
@@ -24,13 +24,22 @@ public class enemigofantasma {
         int direccion = (int)(Math.random() * 4);
         int nuevaFila = fila;
         int nuevaColumna = columna;
-        
+
         switch (direccion) {
-            case 0: nuevaFila--; break;    
-            case 1: nuevaFila++; break;    
-            case 2: nuevaColumna--; break; 
-            case 3: nuevaColumna++; break; 
+            case 0:
+                nuevaFila--;
+            break;
+            case 1:
+                nuevaFila++;
+            break;
+            case 2:
+                nuevaColumna--;
+            break;
+            case 3:
+                nuevaColumna++;
+                break;
         }
+
 
         //ignora muros
         if (nuevaFila >= 0 && nuevaFila < t.getFilas() && nuevaColumna >= 0 && nuevaColumna < t.getColumnas()) {
@@ -61,7 +70,7 @@ public class enemigofantasma {
         System.out.println("Habilidad: Atraviesa los muros internos.");
         System.out.println("----------------------------");
     }
-    
+
     public int getFila() {
         return fila;
     }
