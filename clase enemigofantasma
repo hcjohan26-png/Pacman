@@ -1,0 +1,89 @@
+public class enemigofantasma {
+
+    private String tipo;
+    private int fila;
+    private int columna;
+    private int daño;
+    private boolean activo;
+
+    // constructor parametrizado
+    public enemigofantasma(int fila, int columna) {
+        this.tipo = "fantasma";
+        this.fila = fila;
+        this.columna = columna;
+        this.daño = 1;
+        this.activo = true;
+    }
+
+    // metodo mover
+    public void mover(tablero t) {
+        if (!activo) {
+            return;
+        }
+
+        int direccion = (int)(Math.random() * 4);
+        int nuevaFila = fila;
+        int nuevaColumna = columna;
+        
+        switch (direccion) {
+            case 0: nuevaFila--; break;    
+            case 1: nuevaFila++; break;    
+            case 2: nuevaColumna--; break; 
+            case 3: nuevaColumna++; break; 
+        }
+
+        //ignora muros
+        if (nuevaFila >= 0 && nuevaFila < t.getFilas() && nuevaColumna >= 0 && nuevaColumna < t.getColumnas()) {
+            this.fila = nuevaFila;
+            this.columna = nuevaColumna;
+        }
+    }
+    // ataca
+    public void atacar(Jugador j) {
+        if (activo && j.estaVivo()) {
+            j.recibirDaño(this.daño);
+        }
+    }
+
+    // colision
+    public boolean verificarColision(Jugador j) {
+        return activo && fila == j.getFila() && columna == j.getColumna();
+    }
+
+    // datos del enmigo
+    public void mostrarEstado() {
+        System.out.println("----- Enemigo Fantasma -----");
+        System.out.println("Tipo: " + tipo);
+        System.out.println("Fila: " + fila);
+        System.out.println("Columna: " + columna);
+        System.out.println("Daño: " + daño);
+        System.out.println("Activo: " + activo);
+        System.out.println("Habilidad: Atraviesa los muros internos.");
+        System.out.println("----------------------------");
+    }
+    
+    public int getFila() {
+        return fila;
+    }
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
+
+    public int getColumna() {
+        return columna;
+    }
+    public void setColumna(int columna) {
+        this.columna = columna;
+    }
+
+    public int getDaño() {
+        return daño;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+}
