@@ -6,7 +6,7 @@ public class enemigofantasma {
     private int daño;
     private boolean activo;
 
-    // Constructor
+    // constructor parametrizado
     public enemigofantasma(int fila, int columna) {
         this.tipo = "fantasma";
         this.fila = fila;
