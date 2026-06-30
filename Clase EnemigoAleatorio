@@ -13,7 +13,7 @@ public class EnemigoAleatorio {
         this.activo = true;
     }
 
-    // Mueve el enemigo en una dirección aleatoria, validando con el tablero
+    // Movimiento Aleatorio
     public void mover(Tablero tablero) {
         if (!activo) return;
 
@@ -36,7 +36,7 @@ public class EnemigoAleatorio {
                 break; // derecha
         }
 
-        // Verifica con el tablero si la nueva posición es válida (límites y muros)
+        // Verifica con el tablero si la nueva posición es válida
         if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
             this.fila = nuevaFila;
             this.columna = nuevaColumna;
