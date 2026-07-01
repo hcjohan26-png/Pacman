@@ -20,11 +20,9 @@ public class EnemigoPerseguidor {
         int nuevaFila = this.fila;
         int nuevaColumna = this.columna;
 
-        // 1. Calcular la diferencia de distancia en ambos ejes
         int difFila = jugador.getFila() - this.fila;
         int difColumna = jugador.getColumna() - this.columna;
 
-        // 2. Priorizar el movimiento en el eje donde la distancia sea mayor
         if (Math.abs(difFila) >= Math.abs(difColumna) && difFila != 0) {
             // Intentar moverse verticalmente
             nuevaFila += (difFila > 0) ? 1 : -1;
@@ -33,12 +31,11 @@ public class EnemigoPerseguidor {
             nuevaColumna += (difColumna > 0) ? 1 : -1;
         }
 
-        // 3. Verifica con el tablero si la nueva posición es válida (límites y muros)
         if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
             this.fila = nuevaFila;
             this.columna = nuevaColumna;
         } else {
-            // CAMINO ALTERNATIVO: Si el movimiento ideal falló por un muro, intenta el otro eje
+            // CAMINO ALTERNATIVO
             nuevaFila = this.fila;
             nuevaColumna = this.columna;
 
@@ -50,12 +47,10 @@ public class EnemigoPerseguidor {
                 if (difFila != 0) nuevaFila += (difFila > 0) ? 1 : -1;
             }
 
-            // Si este camino alternativo sí es válido, se mueve ahí
             if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
                 this.fila = nuevaFila;
                 this.columna = nuevaColumna;
             }
-            // Si ambos fallan, se queda quieto atrapado en la esquina/muro ese turno
         }
     }
 
