@@ -1,0 +1,96 @@
+import java.util.Scanner;
+
+public class Juego {
+    private Jugador jugador;
+    private Tablero tablero;
+    private Scanner lector;
+
+    public Juego() {
+        lector = new Scanner(System.in);
+    }
+
+    public static void main(String[] args) {
+        Juego juego = new Juego();
+        juego.iniciarJuego();
+        juego.jugar();
+    }
+
+    public void iniciarJuego() {
+        System.out.print("Número de filas (mínimo 8): ");
+        int filas = lector.nextInt();
+
+        System.out.print("Número de columnas (mínimo 8): ");
+        int columnas = lector.nextInt();
+
+        tablero = new Tablero(filas, columnas);
+        for (int i = 0; i < tablero.getFilas(); i++) {
+            for (int j = 0; j < tablero.getColumnas(); j++) {
+                tablero.setMatriz(i, j, ' ');
+            }
+        }
+        tablero.agregarMuros();
+        tablero.agregarPuntos();
+
+        int[] posJugador = tablero.obtenerPosicionLibreAleatoria();
+        jugador = new Jugador("Jugador", posJugador[0], posJugador[1]);
+
+        System.out.println("Juego iniciado");
+        System.out.println("Controles: w (arriba), s (abajo), a (izquierda), d (derecha), q (salir)");
+        actualizarTablero();
+    }
+
+    public void jugar() {
+        boolean juegoTerminado = false;
+        while (!juegoTerminado) {
+            System.out.print("Movimiento: ");
+            String entrada = lector.next();
+            char direccion = entrada.charAt(0);
+
+            if (direccion == 'q') {
+                juegoTerminado = true;
+                System.out.println("Juego terminado por el jugador.");
+                break;
+            }
+
+            int filaAnterior = jugador.getFila();
+            int columnaAnterior = jugador.getColumna();
+
+            jugador.mover(direccion);
+
+            if (!tablero.esMovimientoValido(jugador.getFila(), jugador.getColumna())) {
+                jugador.setFila(filaAnterior);
+                jugador.setColumna(columnaAnterior);
+                System.out.println("Movimiento inválido, hay un muro.");
+            } else {
+                procesarCelda();
+            }
+
+            actualizarTablero();
+        }
+    }
+
+    private void procesarCelda() {
+        char celda = tablero.getMatriz()[jugador.getFila()][jugador.getColumna()];
+
+        if (celda == '.') {
+            Punto p = new Punto(jugador.getFila(), jugador.getColumna(), 1);
+            jugador.recogerPunto(p);
+            tablero.setMatriz(jugador.getFila(), jugador.getColumna(), ' ');
+        }
+    }
+
+    public void actualizarTablero() {
+        char[][] matriz = tablero.getMatriz();
+
+        for (int i = 0; i < tablero.getFilas(); i++) {
+            for (int j = 0; j < tablero.getColumnas(); j++) {
+                if (i == jugador.getFila() && j == jugador.getColumna()) {
+                    System.out.print('@');
+                } else {
+                    System.out.print(matriz[i][j]);
+                }
+            }
+            System.out.println();
+        }
+    }
+}
