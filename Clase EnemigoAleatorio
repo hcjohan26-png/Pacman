@@ -1,7 +1,7 @@
-ppublic class EnemigoFantasma extends Enemigo {
+public class EnemigoAleatorio extends Enemigo {
 
-    public EnemigoFantasma(int fila, int columna) {
-        super("fantasma", fila, columna, 1);
+    public EnemigoAleatorio(int fila, int columna) {
+        super("aleatorio", fila, columna, 3);
     }
 
     @Override
@@ -19,9 +19,7 @@ ppublic class EnemigoFantasma extends Enemigo {
             case 3: nuevaColumna++; break;
         }
 
-        // ignora muros
-        if (nuevaFila >= 0 && nuevaFila < tablero.getFilas()
-                && nuevaColumna >= 0 && nuevaColumna < tablero.getColumnas()) {
+        if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
             this.fila = nuevaFila;
             this.columna = nuevaColumna;
         }
@@ -30,7 +28,7 @@ ppublic class EnemigoFantasma extends Enemigo {
     @Override
     public void mostrarEstado() {
         super.mostrarEstado();
-        System.out.println("Habilidad: Atraviesa los muros internos.");
+        System.out.println("Comportamiento: Se mueve en dirección aleatoria cada turno.");
         System.out.println("--------------------------");
     }
 }

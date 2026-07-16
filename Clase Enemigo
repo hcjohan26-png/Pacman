@@ -1,0 +1,51 @@
+public class Enemigo {
+    protected String tipo;
+    protected int fila;
+    protected int columna;
+    protected int daño;
+    protected boolean activo;
+
+    public Enemigo(String tipo, int fila, int columna, int daño) {
+        this.tipo = tipo;
+        this.fila = fila;
+        this.columna = columna;
+        this.daño = daño;
+        this.activo = true;
+    }
+
+    public void mover(Tablero tablero, Jugador jugador) {
+        // vacío a propósito: cada subclase define su propio movimiento
+    }
+
+    public void atacar(Jugador j) {
+        boolean esInvulnerable = j.isPoderActivo() && "Invulnerabilidad".equals(j.getTipoPoderActivo());
+
+        if (this.activo && j.estaVivo() && !esInvulnerable) {
+            j.recibirDaño(this.daño);
+        } else if (this.activo && esInvulnerable) {
+            System.out.println(j.getNombre() + " es invulnerable, el ataque de " + tipo + " no tuvo efecto.");
+        }
+    }
+
+    public boolean verificarColision(Jugador j) {
+        return this.activo && (this.fila == j.getFila() && this.columna == j.getColumna());
+    }
+
+    public void mostrarEstado() {
+        System.out.println("--- Estado del Enemigo ---");
+        System.out.println("Tipo: " + tipo);
+        System.out.println("Posición: [" + fila + ", " + columna + "]");
+        System.out.println("Daño: " + daño);
+        System.out.println("Activo: " + (activo ? "Sí" : "No"));
+        System.out.println("--------------------------");
+    }
+
+    public String getTipo() { return tipo; }
+    public int getFila() { return fila; }
+    public void setFila(int fila) { this.fila = fila; }
+    public int getColumna() { return columna; }
+    public void setColumna(int columna) { this.columna = columna; }
+    public int getDaño() { return daño; }
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
+}
