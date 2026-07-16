@@ -1,12 +1,20 @@
 public class EnemigoPerseguidor extends Enemigo {
 
+    private int turnosCongelado;
+
     public EnemigoPerseguidor(int fila, int columna, int daño) {
         super("perseguidor", fila, columna, daño);
+        this.turnosCongelado = 0;
     }
 
     @Override
     public void mover(Tablero tablero, Jugador jugador) {
         if (!activo || !jugador.estaVivo()) return;
+
+        if (turnosCongelado > 0) {
+            turnosCongelado--;
+            return;
+        }
 
         int nuevaFila = this.fila;
         int nuevaColumna = this.columna;
@@ -35,12 +43,19 @@ public class EnemigoPerseguidor extends Enemigo {
                 this.columna = nuevaColumna;
             }
         }
+
+        if (this.fila == jugador.getFila() && this.columna == jugador.getColumna()) {
+            turnosCongelado = 5;
+        }
     }
 
     @Override
     public void mostrarEstado() {
         super.mostrarEstado();
         System.out.println("Comportamiento: Persigue activamente al jugador en cada turno.");
+        if (turnosCongelado > 0) {
+            System.out.println(">> [!] El enemigo está recuperando el aliento... (" + turnosCongelado + " turnos inactivo).");
+        }
         System.out.println("--------------------------");
     }
 }
