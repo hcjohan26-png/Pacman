@@ -1,6 +1,6 @@
 ppublic class EnemigoFantasma extends Enemigo {
 
-    public EnemigoFantasma(int fila, int columna) {
+    public EnemigoFantasma(int fila, int columna) {a
         super("fantasma", fila, columna, 1);
     }
 
