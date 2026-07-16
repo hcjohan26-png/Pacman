@@ -1,0 +1,134 @@
+public class Jugador {
+    // Atributos
+    private String nombre;
+    private int fila;
+    private int columna;
+    private int salud;
+    private int puntaje;
+    private boolean poderActivo;
+    private String tipoPoderActivo;
+    private int turnosPoderRestante;
+    private static final int SALUD_INICIAL = 3;
+
+    public Jugador(String nombre, int fila, int columna) {
+        this.nombre = nombre;
+        this.fila = fila;
+        this.columna = columna;
+        this.salud = SALUD_INICIAL;
+        this.puntaje = 0;
+        this.poderActivo = false;
+        this.tipoPoderActivo = null;
+        this.turnosPoderRestante = 0;
+    }
+
+    // Dirección
+    public void mover(char direccion) {
+        switch (direccion) {
+            case 'w': fila--;break;
+            case 's': fila++; break;
+            case 'a': columna--; break;
+            case 'd': columna++; break;
+            default:
+                System.out.println("Tecla inválida: " + direccion);
+                return;
+        }
+        System.out.println(nombre + " se movió " + " → Posición: [" + fila + ", " + columna + "]");
+    }
+
+    // Puntaje
+    public void recogerPunto(Punto p) {
+        int valorObtenido = p.obtenerValor();
+        puntaje += valorObtenido;
+        System.out.println(nombre + " recogió un punto (+" + valorObtenido +
+                ") → Puntaje total: " + puntaje);
+    }
+
+    // Salud
+    public boolean estaVivo() {
+        return salud > 0;
+    }
+
+    public void recibirDaño(int cantidad) {
+        salud -= cantidad;
+        if (salud < 0) salud = 0;
+
+        System.out.println(nombre + " recibió " + cantidad +
+                " de daño → Salud restante: " + salud);
+
+        if (!estaVivo()) {
+            System.out.println(nombre + " ha sido eliminado.");
+        }
+    }
+
+    // Poder
+    public void usarPoder(Poder p) {
+        p.activar(this); // el efecto inmediato (ej. curar) siempre ocurre
+
+        if (p.getDuracion() > 0) {
+            poderActivo = true;
+            tipoPoderActivo = p.getTipo();
+            turnosPoderRestante = p.getDuracion();
+        }
+
+        System.out.println(nombre + " activó el poder: " + p.descripcion());
+    }
+
+    // Se llama una vez por turno (desde Juego.ejecutarTurno()) para descontar la duración
+    public void actualizarEstadoPoder() {
+        if (poderActivo) {
+            turnosPoderRestante--;
+            if (turnosPoderRestante <= 0) {
+                System.out.println("El poder de " + nombre + " (" + tipoPoderActivo + ") se ha desactivado.");
+                poderActivo = false;
+                tipoPoderActivo = null;
+                turnosPoderRestante = 0;
+            }
+        }
+    }
+
+    // Salida
+    public void mostrarEstado() {
+        System.out.println("--- Estado del Jugador ---");
+        System.out.println("Nombre: " + nombre);
+        System.out.println("Posición: [" + fila + ", " + columna + "]");
+        System.out.println("Salud: " + salud);
+        System.out.println("Puntaje: " + puntaje);
+        System.out.println("Poder activo: " + (poderActivo ? tipoPoderActivo + " (" + turnosPoderRestante + " turnos)" : "No"));
+        System.out.println("--------------------------");
+    }
+
+    // get y set
+    public String getNombre() {
+        return nombre;
+    }
+    public int getFila() {
+        return fila;
+    }
+    public void setFila(int fila) {
+        this.fila = fila;
+    }
+    public int getColumna() {
+        return columna;
+    }
+    public void setColumna(int columna) {
+        this.columna = columna;
+    }
+    public int getSalud() {
+        return salud;
+    }
+    public void setSalud(int salud) {
+        this.salud = salud;
+    }
+    public int getPuntaje() {
+        return puntaje;
+    }
+    public boolean isPoderActivo() {
+        return poderActivo;
+    }
+    public void setPoderActivo(boolean poderActivo) {
+        this.poderActivo = poderActivo;
+    }
+    public String getTipoPoderActivo() {
+        return tipoPoderActivo;
+    }
+}
