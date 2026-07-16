@@ -1,0 +1,36 @@
+ppublic class EnemigoFantasma extends Enemigo {
+
+    public EnemigoFantasma(int fila, int columna) {
+        super("fantasma", fila, columna, 1);
+    }
+
+    @Override
+    public void mover(Tablero tablero, Jugador jugador) {
+        if (!activo) return;
+
+        int direccion = (int)(Math.random() * 4);
+        int nuevaFila = this.fila;
+        int nuevaColumna = this.columna;
+
+        switch (direccion) {
+            case 0: nuevaFila--; break;
+            case 1: nuevaFila++; break;
+            case 2: nuevaColumna--; break;
+            case 3: nuevaColumna++; break;
+        }
+
+        // ignora muros
+        if (nuevaFila >= 0 && nuevaFila < tablero.getFilas()
+                && nuevaColumna >= 0 && nuevaColumna < tablero.getColumnas()) {
+            this.fila = nuevaFila;
+            this.columna = nuevaColumna;
+        }
+    }
+
+    @Override
+    public void mostrarEstado() {
+        super.mostrarEstado();
+        System.out.println("Habilidad: Atraviesa los muros internos.");
+        System.out.println("--------------------------");
+    }
+}

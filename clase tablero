@@ -1,0 +1,202 @@
+
+import java.util.Random;
+
+public class Tablero {
+    private int filas;
+    private int columnas;
+    private char[][] matriz;
+    private Muro[] muros;
+    private Punto[] puntos;
+    private Poder[] poderes;
+    private int totalMuros;
+    private int totalPuntos;
+    private int totalPoderes;
+
+    public Tablero(int filasJugables, int columnasJugables) {
+        this.filas = filasJugables + 2;
+        this.columnas = columnasJugables + 2;
+        this.matriz = new char[filas][columnas];
+        this.muros = new Muro[filas * columnas];
+        this.puntos = new Punto[filas * columnas];
+        this.poderes = new Poder[3];
+        this.totalMuros = 0;
+        this.totalPuntos = 0;
+        this.totalPoderes = 0;
+    }
+
+    public void generarTablero() {
+        limpiarMatriz();
+        agregarBordes();
+        agregarMurosInternosAleatorios();
+        agregarPuntos();
+        agregarPoderes();
+    }
+
+    public void generarTablero(int cantidadMurosInternos) {
+        limpiarMatriz();
+        agregarBordes();
+        agregarMurosInternos(cantidadMurosInternos);
+        agregarPuntos();
+        agregarPoderes();
+    }
+
+    private void limpiarMatriz() {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                matriz[i][j] = ' ';
+            }
+        }
+    }
+
+    public void agregarMuros() {
+        agregarBordes();
+        agregarMurosInternosAleatorios();
+    }
+
+    public void agregarBordes() {
+        for (int i = 0; i < filas; i++) {
+            muros[totalMuros++] = new Muro(i, 0);
+            muros[totalMuros++] = new Muro(i, columnas - 1);
+            matriz[i][0] = '#';
+            matriz[i][columnas - 1] = '#';
+        }
+        for (int j = 1; j < columnas - 1; j++) {
+            muros[totalMuros++] = new Muro(0, j);
+            muros[totalMuros++] = new Muro(filas - 1, j);
+            matriz[0][j] = '#';
+            matriz[filas - 1][j] = '#';
+        }
+    }
+
+    public void agregarMurosInternosAleatorios() {
+        Random rand = new Random();
+        int murosAleatorios = (filas * columnas) / 8;
+        for (int k = 0; k < murosAleatorios; k++) {
+            int fila = rand.nextInt(filas - 2) + 1;
+            int columna = rand.nextInt(columnas - 2) + 1;
+            if (matriz[fila][columna] == ' ') {
+                muros[totalMuros++] = new Muro(fila, columna);
+                matriz[fila][columna] = '#';
+            }
+        }
+    }
+
+    public void agregarMurosInternos(int cantidad) {
+        int espacioInterior = (filas - 2) * (columnas - 2);
+        if (cantidad > espacioInterior) {
+            cantidad = espacioInterior;
+        }
+
+        Random rand = new Random();
+        int colocados = 0;
+        int intentos = 0;
+        int intentosMaximos = espacioInterior * 20;
+
+        while (colocados < cantidad && intentos < intentosMaximos) {
+            int fila = rand.nextInt(filas - 2) + 1;
+            int columna = rand.nextInt(columnas - 2) + 1;
+            if (matriz[fila][columna] == ' ') {
+                muros[totalMuros++] = new Muro(fila, columna);
+                matriz[fila][columna] = '#';
+                colocados++;
+            }
+            intentos++;
+        }
+    }
+
+    public void agregarPuntos() {
+        for (int i = 1; i < filas - 1; i++) {
+            for (int j = 1; j < columnas - 1; j++) {
+                if (matriz[i][j] == ' ') {
+                    puntos[totalPuntos++] = new Punto(i, j, 1);
+                    matriz[i][j] = '.';
+                }
+            }
+        }
+    }
+
+    public void agregarPoderes() {
+        Random rand = new Random();
+        String[] tipos = { "Invulnerabilidad", "Congelar enemigos", "Recuperación de salud" };
+        int[] duraciones = { 5, 5, 0 };
+        boolean[] usado = new boolean[3];
+        int colocados = 0;
+
+        while (colocados < 3) {
+            int fila = rand.nextInt(filas - 2) + 1;
+            int columna = rand.nextInt(columnas - 2) + 1;
+
+            if (matriz[fila][columna] == '.') {
+                int indiceTipo;
+                do {
+                    indiceTipo = rand.nextInt(3);
+                } while (usado[indiceTipo]);
+
+                usado[indiceTipo] = true;
+                poderes[totalPoderes++] = new Poder(tipos[indiceTipo], duraciones[indiceTipo], fila, columna);
+                matriz[fila][columna] = 'P';
+                totalPuntos--;
+                colocados++;
+            }
+        }
+    }
+
+    public void mostrarTablero() {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
+                System.out.print(matriz[i][j]);
+            }
+            System.out.println();
+        }
+    }
+
+    public boolean esMovimientoValido(int fila, int columna) {
+        if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas) {
+            return false;
+        }
+        return matriz[fila][columna] != '#';
+    }
+
+    public int[] obtenerPosicionLibreAleatoria() {
+        Random rand = new Random();
+        int fila, columna;
+        do {
+            fila = rand.nextInt(filas - 2) + 1;
+            columna = rand.nextInt(columnas - 2) + 1;
+        } while (matriz[fila][columna] == '#');
+
+        return new int[]{fila, columna};
+    }
+
+    public int getFilas() {
+        return filas;
+    }
+    public int getColumnas() {
+        return columnas;
+    }
+    public char[][] getMatriz() {
+        return matriz;
+    }
+    public Muro[] getMuros() {
+        return muros;
+    }
+    public Punto[] getPuntos() {
+        return puntos;
+    }
+    public Poder[] getPoderes() {
+        return poderes;
+    }
+    public int getTotalMuros() {
+        return totalMuros;
+    }
+    public int getTotalPuntos() {
+        return totalPuntos;
+    }
+    public int getTotalPoderes() {
+        return totalPoderes;
+    }
+
+    public void setMatriz(int fila, int columna, char valor) {
+        matriz[fila][columna] = valor;
+    }
+}
