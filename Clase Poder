@@ -41,20 +41,20 @@ public class Poder {
         }
     }
 
-    public String getTipo() { 
-        return tipo; 
+    public String getTipo() {
+        return tipo;
     }
-    public void setTipo(String tipo) { 
-        this.tipo = tipo; 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
-    public int getDuracion() { 
-        return duracion; 
+    public int getDuracion() {
+        return duracion;
     }
     public void setDuracion(int duracion) {
-        this.duracion = duracion; 
+        this.duracion = duracion;
     }
-    public int getFila() { 
-        return fila; 
+    public int getFila() {
+        return fila;
     }
     public int getColumna() {
         return columna;
