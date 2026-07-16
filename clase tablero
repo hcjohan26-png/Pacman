@@ -12,9 +12,9 @@ public class Tablero {
     private int totalPuntos;
     private int totalPoderes;
 
-    public Tablero(int filas, int columnas) {
-        this.filas = filas;
-        this.columnas = columnas;
+    public Tablero(int filasJugables, int columnasJugables) {
+        this.filas = filasJugables + 2;
+        this.columnas = columnasJugables + 2;
         this.matriz = new char[filas][columnas];
         this.muros = new Muro[filas * columnas];
         this.puntos = new Punto[filas * columnas];
@@ -25,17 +25,35 @@ public class Tablero {
     }
 
     public void generarTablero() {
+        limpiarMatriz();
+        agregarBordes();
+        agregarMurosInternosAleatorios();
+        agregarPuntos();
+        agregarPoderes();
+    }
+
+    public void generarTablero(int cantidadMurosInternos) {
+        limpiarMatriz();
+        agregarBordes();
+        agregarMurosInternos(cantidadMurosInternos);
+        agregarPuntos();
+        agregarPoderes();
+    }
+
+    private void limpiarMatriz() {
         for (int i = 0; i < filas; i++) {
             for (int j = 0; j < columnas; j++) {
                 matriz[i][j] = ' ';
             }
         }
-        agregarMuros();
-        agregarPuntos();
-        agregarPoderes();
     }
 
     public void agregarMuros() {
+        agregarBordes();
+        agregarMurosInternosAleatorios();
+    }
+
+    public void agregarBordes() {
         for (int i = 0; i < filas; i++) {
             muros[totalMuros++] = new Muro(i, 0);
             muros[totalMuros++] = new Muro(i, columnas - 1);
@@ -48,7 +66,9 @@ public class Tablero {
             matriz[0][j] = '#';
             matriz[filas - 1][j] = '#';
         }
+    }
 
+    public void agregarMurosInternosAleatorios() {
         Random rand = new Random();
         int murosAleatorios = (filas * columnas) / 8;
         for (int k = 0; k < murosAleatorios; k++) {
@@ -58,6 +78,29 @@ public class Tablero {
                 muros[totalMuros++] = new Muro(fila, columna);
                 matriz[fila][columna] = '#';
             }
+        }
+    }
+
+    public void agregarMurosInternos(int cantidad) {
+        int espacioInterior = (filas - 2) * (columnas - 2);
+        if (cantidad > espacioInterior) {
+            cantidad = espacioInterior;
+        }
+
+        Random rand = new Random();
+        int colocados = 0;
+        int intentos = 0;
+        int intentosMaximos = espacioInterior * 20;
+
+        while (colocados < cantidad && intentos < intentosMaximos) {
+            int fila = rand.nextInt(filas - 2) + 1;
+            int columna = rand.nextInt(columnas - 2) + 1;
+            if (matriz[fila][columna] == ' ') {
+                muros[totalMuros++] = new Muro(fila, columna);
+                matriz[fila][columna] = '#';
+                colocados++;
+            }
+            intentos++;
         }
     }
 
@@ -92,6 +135,7 @@ public class Tablero {
                 usado[indiceTipo] = true;
                 poderes[totalPoderes++] = new Poder(tipos[indiceTipo], duraciones[indiceTipo], fila, columna);
                 matriz[fila][columna] = 'P';
+                totalPuntos--;
                 colocados++;
             }
         }
@@ -124,24 +168,33 @@ public class Tablero {
         return new int[]{fila, columna};
     }
 
-    public int getFilas() { 
-        return filas; }
-    public int getColumnas() { 
-        return columnas; }
-    public char[][] getMatriz() { 
-        return matriz; }
-    public Muro[] getMuros() { 
-        return muros; }
-    public Punto[] getPuntos() { 
-        return puntos; }
-    public Poder[] getPoderes() { 
-        return poderes; }
-    public int getTotalMuros() { 
-        return totalMuros; }
-    public int getTotalPuntos() { 
-        return totalPuntos; }
-    public int getTotalPoderes() { 
-        return totalPoderes; }
+    public int getFilas() {
+        return filas;
+    }
+    public int getColumnas() {
+        return columnas;
+    }
+    public char[][] getMatriz() {
+        return matriz;
+    }
+    public Muro[] getMuros() {
+        return muros;
+    }
+    public Punto[] getPuntos() {
+        return puntos;
+    }
+    public Poder[] getPoderes() {
+        return poderes;
+    }
+    public int getTotalMuros() {
+        return totalMuros;
+    }
+    public int getTotalPuntos() {
+        return totalPuntos;
+    }
+    public int getTotalPoderes() {
+        return totalPoderes;
+    }
 
     public void setMatriz(int fila, int columna, char valor) {
         matriz[fila][columna] = valor;
