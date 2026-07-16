@@ -1,0 +1,61 @@
+public class EnemigoPerseguidor extends Enemigo {
+
+    private int turnosCongelado;
+
+    public EnemigoPerseguidor(int fila, int columna, int daño) {
+        super("perseguidor", fila, columna, daño);
+        this.turnosCongelado = 0;
+    }
+
+    @Override
+    public void mover(Tablero tablero, Jugador jugador) {
+        if (!activo || !jugador.estaVivo()) return;
+
+        if (turnosCongelado > 0) {
+            turnosCongelado--;
+            return;
+        }
+
+        int nuevaFila = this.fila;
+        int nuevaColumna = this.columna;
+        int difFila = jugador.getFila() - this.fila;
+        int difColumna = jugador.getColumna() - this.columna;
+
+        if (Math.abs(difFila) >= Math.abs(difColumna) && difFila != 0) {
+            nuevaFila += (difFila > 0) ? 1 : -1;
+        } else if (difColumna != 0) {
+            nuevaColumna += (difColumna > 0) ? 1 : -1;
+        }
+
+        if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
+            this.fila = nuevaFila;
+            this.columna = nuevaColumna;
+        } else {
+            nuevaFila = this.fila;
+            nuevaColumna = this.columna;
+            if (Math.abs(difFila) >= Math.abs(difColumna)) {
+                if (difColumna != 0) nuevaColumna += (difColumna > 0) ? 1 : -1;
+            } else {
+                if (difFila != 0) nuevaFila += (difFila > 0) ? 1 : -1;
+            }
+            if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
+                this.fila = nuevaFila;
+                this.columna = nuevaColumna;
+            }
+        }
+
+        if (this.fila == jugador.getFila() && this.columna == jugador.getColumna()) {
+            turnosCongelado = 5;
+        }
+    }
+
+    @Override
+    public void mostrarEstado() {
+        super.mostrarEstado();
+        System.out.println("Comportamiento: Persigue activamente al jugador en cada turno.");
+        if (turnosCongelado > 0) {
+            System.out.println(">> [!] El enemigo está recuperando el aliento... (" + turnosCongelado + " turnos inactivo).");
+        }
+        System.out.println("--------------------------");
+    }
+}
