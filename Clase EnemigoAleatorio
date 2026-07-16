@@ -1,0 +1,34 @@
+public class EnemigoAleatorio extends Enemigo {
+
+    public EnemigoAleatorio(int fila, int columna) {
+        super("aleatorio", fila, columna, 3);
+    }
+
+    @Override
+    public void mover(Tablero tablero, Jugador jugador) {
+        if (!activo) return;
+
+        int direccion = (int)(Math.random() * 4);
+        int nuevaFila = this.fila;
+        int nuevaColumna = this.columna;
+
+        switch (direccion) {
+            case 0: nuevaFila--; break;
+            case 1: nuevaFila++; break;
+            case 2: nuevaColumna--; break;
+            case 3: nuevaColumna++; break;
+        }
+
+        if (tablero.esMovimientoValido(nuevaFila, nuevaColumna)) {
+            this.fila = nuevaFila;
+            this.columna = nuevaColumna;
+        }
+    }
+
+    @Override
+    public void mostrarEstado() {
+        super.mostrarEstado();
+        System.out.println("Comportamiento: Se mueve en dirección aleatoria cada turno.");
+        System.out.println("--------------------------");
+    }
+}
